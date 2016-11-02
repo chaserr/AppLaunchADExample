@@ -16,6 +16,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        window = UIWindow.init(frame: UIScreen.main.bounds)
+        window?.backgroundColor = UIColor.white
+        window?.makeKeyAndVisible()
+        
+        let vc = ViewController()
+        let nvc = UINavigationController.init(rootViewController: vc)
+        window?.rootViewController = nvc
+        
+        let picUrl = "http://ww3.sinaimg.cn/mw690/937882b5gw1f9alr6oysjj20hs0qowg0.jpg"
+        let userDefaultKey = "launchImageKey"
+        
+        if UserDefaults.standard.string(forKey: userDefaultKey) == "1" {
+            let startView: LaunchImageView = LaunchImageView.startAdsWith(imageUrl: picUrl, clickImageAction: {[weak self] in
+                let vc = LoadAdsWebViewViewController()
+                vc.title = "广告加载页面"
+                (self?.window?.rootViewController as! UINavigationController).pushViewController(vc, animated: true)
+            }) as! LaunchImageView
+            
+            startView.startAnimationTime(time: 5, completionBlock: { (adsView: LaunchImageView) in
+                print("广告执行结束")
+            })
+            
+        }else{
+        
+            LaunchImageView.downLoadAdsImage(imageUrl: picUrl)
+            UserDefaults.standard.set("1", forKey: userDefaultKey)
+            _ = UserDefaults.standard.synchronize()
+        }
+        
+        
+        
+        
+        
         return true
     }
 
